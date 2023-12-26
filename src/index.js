@@ -2,10 +2,10 @@ import express from 'express';
 import {Server as WebSocketServer} from 'socket.io';
 import http from 'http';
 import cors from 'cors';
-import { dataConnection, getNotifications } from './db/database.js';
+import { listenerNotificaciones } from './notificaciones/index.js';
+import { listenerMensajeria } from './mensajeria/app.js';
 
 const app = express();
-
 const httpServer = http.createServer(app);
 const io = new WebSocketServer(httpServer, {
   cors: {
@@ -16,39 +16,29 @@ const io = new WebSocketServer(httpServer, {
 });
 app.use(cors());
 app.use(express.static('public'));
-app.get('/', function(req,res){
-  res.status(200).send('Servicio arriba');
+app.set('publicPath', process.cwd()+'\\public');
+
+
+app.get('/mensajeria', function(req,res){
+  res.status(200).sendFile(process.cwd()+'/src/mensajeria/index.html');
+
+  // res.status(200).send('Servicio arriba');
 });
+app.get('/navidad', function(req,res){
+  res.status(200).sendFile(app.get('publicPath')+'/page.html');
+  console.log(app.get("publicPath"))
+});
+
+
 io.on('connection', (socket) => {
   console.log('Cliente contectado ', socket.id);
 
-  socket.on('join', (message) => {// union a un grupo (subdominio)
-    console.log('Cliente se unio a la sala ', message);
-    socket.join(message);
-    socket.emit('message', 'Se unio a la sala ' + message);
-    socket.to(message).emit('message', 'Se unio a la sala ' + message);
-  });
-
-  socket.on('notify', async (message) => { // se creo un nuevo registro en la base
-    socket.emit('message', message);
-    const subdominio = message.split(',')[0];
-    dataConnection(`webinventario_${subdominio}`)
-    const notifications = await getNotifications(subdominio);
-    socket.to(subdominio).emit('notifications', notifications);
-  });
-
-
-  socket.on('getNotify', async (message) => { // mensaje individual 
-    var subdominio = message.split(',')[0];
-    dataConnection(`webinventario_${subdominio}`)
-    const notifications = await getNotifications(subdominio);
-    socket.emit('notifications', notifications);
-  })
-
+  listenerNotificaciones(socket);
+  listenerMensajeria(io, socket);
 
   socket.on('disconnect', () => {
     console.log('Cliente desconectado ID: ', socket.id);
-  })
+  });
 });
 const port = 3000
 httpServer.listen(port);
