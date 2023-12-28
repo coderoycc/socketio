@@ -17,17 +17,20 @@ const io = new WebSocketServer(httpServer, {
 app.use(cors());
 app.use(express.static('public'));
 app.set('publicPath', process.cwd()+'\\public');
+app.set('views', process.cwd()+'\\views');
+app.set('view engine', 'ejs');
 
 
-app.get('/mensajeria', function(req,res){
-  res.status(200).sendFile(process.cwd()+'/src/mensajeria/index.html');
-
-  // res.status(200).send('Servicio arriba');
+app.get('/', function(req,res){
+  res.status(200).sendFile(app.get('publicPath')+'/mensajeria/index.html');
 });
 app.get('/navidad', function(req,res){
   res.status(200).sendFile(app.get('publicPath')+'/page.html');
   console.log(app.get("publicPath"))
-});
+}); 
+app.get('/notificaciones', function(req,res){
+  res.status(200).sendFile(app.get('views')+'/pages/chat.html');
+})
 
 
 io.on('connection', (socket) => {

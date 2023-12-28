@@ -10,10 +10,11 @@ export function listenerNotificaciones(socket){
 
   socket.on('notify', async (message) => { // se creo un nuevo registro en la base
     socket.emit('message', message);
+    console.log('[Nueva notificacion para]: '+message)
     const subdominio = message.split(',')[0];
     dataConnection(`webinventario_${subdominio}`)
     const notifications = await getNotifications(subdominio);
-    socket.to(subdominio).emit('notifications', notifications);
+    socket.to(subdominio).emit('newNotification', notifications);
   });
 
 
