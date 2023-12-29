@@ -1,5 +1,5 @@
 import express from 'express';
-import { chatsAnteriores } from '../controllers/chat.js';
+import { chatsAnteriores } from '../chat/controllerChat.js';
 const router = express.Router();
 
 const publicPath = process.cwd()+'\\public';
@@ -10,16 +10,17 @@ router.get('/', function(req,res){
 
 router.get('/navidad', function(req,res){
   res.status(200).sendFile(views+'/page.html');
-}); 
+});
 router.get('/notificaciones', function(req,res){
   res.status(200).sendFile(views+'/pages/chat.html');
 });
 
 router.get('/pru', async (req, res) => {
-  const data = await chatsAnteriores(req)
+  const data = await chatsAnteriores(req.query)
   if(data.status === 'success'){
     res.status(200).render('templates/chat', {
-      data
+      data: data.data,
+      usuario: req.query.usuario || 'Invitado'
     });
   }else{
     res.status(200).render('pages/error',{

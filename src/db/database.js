@@ -31,7 +31,7 @@ export async function getNotifications(){
   try {
     let sql = `SELECT count(*) as cantidad FROM tblNotificacion WHERE estado LIKE 'PENDIENTE'`;
     const notifications = await query(sql);
-    console.log('[RES GET NOTIFICATIONS]',notifications);
+    console.log('[NOTIFICACIONES]',notifications);
     return notifications;
   } catch (error) {
     console.log('[ERROR GET NOTIFICATIONS]',error);

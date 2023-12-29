@@ -3,7 +3,7 @@ import {Server as WebSocketServer} from 'socket.io';
 import http from 'http';
 import cors from 'cors';
 import { listenerNotificaciones } from './notificaciones/index.js';
-import { listenerMensajeria } from './mensajeria/app.js';
+import { listenerChat } from './chat/app.js';
 import bodyParser from 'body-parser';
 import routes from './routes/routes.js';
 
@@ -33,7 +33,7 @@ io.on('connection', (socket) => {
   console.log('Cliente contectado ', socket.id);
   // Listener de socket
   listenerNotificaciones(socket);
-  listenerMensajeria(io, socket);
+  listenerChat(io, socket);
   socket.on('disconnect', () => {
     console.log('Cliente desconectado ID: ', socket.id);
   });

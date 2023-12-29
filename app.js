@@ -25,7 +25,7 @@ export async function messageRegister(id, user, message) {
       if(res<=0) throw new Error('Error al agregar');
     }
   } catch (error) {
-    console.log('[ERROR CREAR MENSAJE]: ')
+    console.log('[ERROR CREAR MENSAJE]: ',error)
   }
 } 
 export async function getMessages(id){

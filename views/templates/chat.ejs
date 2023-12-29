@@ -3,9 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HOLA</title>
+  <title>CHAT EN VIVO</title>
+  <script src="/assets/js/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="/css/chat.css">
 </head>
 <body>
-  <pre><%= data %></pre>
+  <div class="mainChater">
+    <div class="chatArea changeW">
+      <div class="chatMessages">
+        <!-- CABECERA -->
+        <div class="welcomeMess">
+          <div class="img"><img src="/assets/images/imgChat.png" alt="Chat en vivo"></div>
+          <h1 class="roomTitle">Chat en vivo</h1>
+          <p id="copyLinker2" class="copyLinker2"><%= usuario.toUpperCase() %></p>
+        </div>
+
+        <!-- Mensajes -->
+        <% for (const name of data) { %>
+          <% const mensaje = JSON.parse(name) %>
+          <% if (mensaje.user == usuario) { %>
+            <div class="message mMess">
+              <div class="messArea">
+                <p id="sname"><%= mensaje.user %> | <b><%= mensaje.hour %></b></p>
+                <div class="textM"><%= mensaje.message %></div>
+              </div>
+              <div class="prof" style="background-color: #ff7b54;">
+                <p><%= mensaje.user.substring(0,1).toUpperCase() %></p>
+              </div>
+            </div>
+          <% }else{ %>
+            <div class="message">
+              <div class="prof" style="background-color: #939b62;">
+                <p><%= mensaje.user.substring(0,1).toUpperCase() %></p>
+              </div>
+              <div class="messArea">
+                <p id="sname"><%= mensaje.user %> | <b><%= mensaje.hour %></b></p>
+                <div class="textM"><%= mensaje.message %></div>
+              </div>
+            </div>
+          <% } %>
+        <% } %>
+        
+
+      </div>
+
+      <!-- FOOTER -->
+      <div class="messageBox">
+        <div class="textA"><textarea id="message" name="message" rows="1" cols="30"
+            placeholder="Escribe tu mensaje"></textarea></div>
+        <button id="send" class="button-s1" tooltip="Enviar" flow="left"><span
+            class="material-icons headerIcon">send</span></button>
+      </div>
+      <div id="goToDown" class="downDowny"><span class="material-icons">arrow_downward</span></div>
+    </div>
+  </div>
+  <script src="/js/chat.js"></script>
 </body>
 </html>
