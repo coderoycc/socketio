@@ -4,6 +4,8 @@ import http from 'http';
 import cors from 'cors';
 import { listenerNotificaciones } from './notificaciones/index.js';
 import { listenerMensajeria } from './mensajeria/app.js';
+import bodyParser from 'body-parser';
+import routes from './routes/routes.js';
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -15,30 +17,23 @@ const io = new WebSocketServer(httpServer, {
   }
 });
 app.use(cors());
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended:false}))
 app.use(express.static('public'));
 app.set('publicPath', process.cwd()+'\\public');
 app.set('views', process.cwd()+'\\views');
 app.set('view engine', 'ejs');
 
-
-app.get('/', function(req,res){
-  res.status(200).sendFile(app.get('publicPath')+'/mensajeria/index.html');
-});
-app.get('/navidad', function(req,res){
-  res.status(200).sendFile(app.get('publicPath')+'/page.html');
-  console.log(app.get("publicPath"))
-}); 
-app.get('/notificaciones', function(req,res){
-  res.status(200).sendFile(app.get('views')+'/pages/chat.html');
-})
+// Servidor web (rutas)
+app.use('/', routes);
 
 
+// Servidor Socker
 io.on('connection', (socket) => {
   console.log('Cliente contectado ', socket.id);
-
+  // Listener de socket
   listenerNotificaciones(socket);
   listenerMensajeria(io, socket);
-
   socket.on('disconnect', () => {
     console.log('Cliente desconectado ID: ', socket.id);
   });
