@@ -5,7 +5,7 @@ export async function messageRegister(id, user, message) {
     const redis = await new RedisClient().connect();
     const now = new Date();
     const hour = `${now.getHours()<10?'0':''}${now.getHours()}:${now.getMinutes()<10?'0':''}${now.getMinutes()}`;
-    let res = redis.exists(id);
+    let res = await redis.exists(id);
     let objMessage = {
       user,
       message,
