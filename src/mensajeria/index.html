@@ -59,15 +59,60 @@
     #messages>li:nth-child(odd) {
       background: #efefef;
     }
+
+    .backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .alert-box {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      text-align: center;
+    }
+    #cerrarAlert {
+      display: inline-block;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      border-radius: 30px;
+      color: #ffffff; /* Color del texto */
+      background-color: #4CAF50; /* Color de fondo del botón */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+      transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    #cerrarAlert:hover {
+        background-color: #45a049; /* Cambio de color al pasar el ratón */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Cambio de sombra al pasar el ratón */
+    }
   </style>
 </head>
 
 <body>
+  <div id="alertBackdrop" class="backdrop">
+    <div id="alertBox" class="alert-box">
+      <h2>¿Conectarse al chat?</h2>
+      <button id="cerrarAlert">Conectarse</button>
+    </div>
+  </div>
   <input type="hidden" value="subdominio">
   <h1>NOTIFICACIONES</h1>
   <ul id="messages"></ul>
   <form id="form" action="">
-    <input id="input" autocomplete="off" value="BUENOS D&Iacute;AS"><button>Enviar</button>
+    <input id="input" autocomplete="off" value="Hola"><button>Enviar</button>
   </form>
   <script src="/socket.io/socket.io.js"></script>
 
@@ -92,6 +137,13 @@
     var hoy = new Date();
 
     window.onload = function () {
+      var alertBackdrop = document.getElementById('alertBackdrop');
+      alertBackdrop.style.display = 'flex';
+      var cerrarAlertBtn = document.getElementById('cerrarAlert');
+      cerrarAlertBtn.addEventListener('click', function () {
+        alertBackdrop.style.display = 'none';
+      });
+
       console.log("function called...");
       let params = new URLSearchParams(location.search);
       variable = params.get('variable');
@@ -100,6 +152,7 @@
       usuario = params.get('usuario');
       console.log(variable, pin, sms, usuario);
       variable = variable.toUpperCase();
+      decir('Te has unido');
       // document.addEventListener("DOMContentLoaded", function(event) {
       //   event.preventDefault();
       socket.emit('chat message', variable + '//' + sms + '//' + usuario);
@@ -123,18 +176,16 @@
       data = msg.split('//');
       console.log(data);
       sms_lent = data[1].length;
+      var texto = data[1];
+      decir(texto);
       if (data[0].trim() == variable.trim() && sms_lent > 0) {
         hoy = new Date();
         var item = document.createElement('li');
-        var texto = data[1];
-        decir(texto);
         item.textContent = completar(hoy.getHours()) + ':' + completar(hoy.getMinutes()) + ':' + completar(hoy.getSeconds()) + ' ' + data[2] + ': ' + texto;
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
       }
     });
-
-
   </script>
 </body>
 

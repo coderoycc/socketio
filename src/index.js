@@ -19,7 +19,7 @@ app.use(express.static('public'));
 app.set('publicPath', process.cwd()+'\\public');
 
 
-app.get('/mensajeria', function(req,res){
+app.get('/', function(req,res){
   res.status(200).sendFile(process.cwd()+'/src/mensajeria/index.html');
 
   // res.status(200).send('Servicio arriba');
@@ -43,5 +43,3 @@ io.on('connection', (socket) => {
 const port = 3000
 httpServer.listen(port);
 console.log('Servidor iniciado en el puerto ', port);
-
-// comentario rama uno
