@@ -1,9 +1,9 @@
 import sql from 'mssql';
 
 const config = {
-  user: 'sa2',
-  password: '123',
-  server: '192.168.110.226',
+  user: '',
+  password: '',
+  server: '192.168.110.38',
   options: {
     encrypt: true,
     trustServerCertificate: true,
@@ -23,13 +23,14 @@ async function query(sql) {
   }
   return res;
 }
-export function dataConnection(domain) {
+function dataConnection(domain) {
   pool = new sql.ConnectionPool({database:domain, ...config});
 }
 
-export async function getNotifications(){
+export async function getNotifications(subdominio, idUsuario){
   try {
-    let sql = `SELECT count(*) as cantidad FROM tblNotificacion WHERE estado LIKE 'PENDIENTE'`;
+    dataConnection(`webinventario_${subdominio}`);
+    let sql = `SELECT count(*) as cantidad FROM tblNotificacion WHERE estado LIKE 'PENDIENTE' AND idUsuario = ${idUsuario}`;
     const notifications = await query(sql);
     console.log('[RES GET NOTIFICATIONS]',notifications);
     return notifications;
