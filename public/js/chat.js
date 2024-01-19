@@ -1,6 +1,6 @@
 let params = new URLSearchParams(location.search);
 var variable = params.get('variable');
-var user = params.get('usuario');
+var user = params.get('usuario') ?? 'Invitado';
 var socket = io();
 $("textarea").keydown(function (e) {
   if (e.key == 'Enter' && !e.shiftKey) {

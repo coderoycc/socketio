@@ -6,7 +6,6 @@ import { listenerNotificaciones } from './notificaciones/index.js';
 import { listenerChat } from './chat/app.js';
 import bodyParser from 'body-parser';
 import routes from './routes/routes.js';
-import { listenerKaraokola } from './karaokola/karaokola.js';
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -35,7 +34,6 @@ io.on('connection', (socket) => {
   // Listener de socket
   listenerNotificaciones(socket);
   listenerChat(io, socket);
-  listenerKaraokola(io, socket);
   socket.on('disconnect', () => {
     console.log('Cliente desconectado ID: ', socket.id);
   });
